@@ -15,9 +15,9 @@
  */
 
 
- /**
-  * Base configuration of webapp.
-  */
+/**
+ * Base configuration of webapp.
+ */
 var Configuration = {
   /**
    * The name of the sheet containing the database.
@@ -28,7 +28,25 @@ var Configuration = {
    * The starting roster id number.
    */
   startingRosterId: 1001,
-  
+
+  /**
+   * Name of the add-on/webapp
+   */
+  pluginName: 'CLUB TRACKER',
+
+  /**
+   * Some menu options are only available when in debug mode
+   */
+  debug: true,
+
+  dialog: {
+    // set dimensions of dialogs here
+    settings: {
+      height: 500,
+      width: 900,
+    },
+  },
+
   /**
    * An object containing the row positions for top rows of the database sheet.
    */
@@ -43,4 +61,4 @@ var Configuration = {
    * The name of the sheet containing the settings.
    */
   settingsSheetName: 'Settings - DO NOT EDIT OR DELETE THIS SHEET',
-};
+}

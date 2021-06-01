@@ -15,36 +15,36 @@
  */
 
 
-var Message = function(type, pageTitle, messageTitle, messageContent) {
-  this._type = type;
-  this._pageTitle = pageTitle;
-  this._messageTitle = messageTitle;
-  this._messageContent = messageContent;
-};
-
-
-Message.prototype.getHeader = function() {
-  return '<h1>' + this._pageTitle + '</h1>';
+var Message = function (type, pageTitle, messageTitle, messageContent) {
+  this._type = type
+  this._pageTitle = pageTitle
+  this._messageTitle = messageTitle
+  this._messageContent = messageContent
 }
 
 
-Message.prototype.getMain = function() {
-  return '' +
-    '<div class="row">' +
-      '<div class="message message-' + this._type + '">' +
-        '<div class="card">' +
-          '<div class="card-title">' +
-            this._messageTitle +
-          '</div>' +
-          '<div class="card-content">' +
-            this._messageContent +
-          '</div>' +
-        '</div>' +
-      '</div>' +
-    '</div>';
+Message.prototype.getHeader = function () {
+  return `<h1>${this._pageTitle}</h1>`
 }
 
 
-Message.prototype.getFooter = function() {
-  return '';
+Message.prototype.getMain = function () {
+  return `
+    <div class="row">
+      <div class="message message-${this._type}">
+        <div class="card">
+          <div class="card-title">
+            ${this._messageTitle}
+          </div>
+          <div class="card-content">
+            ${this._messageContent}
+          </div>
+        </div>
+      </div>
+    </div>`
+}
+
+
+Message.prototype.getFooter = function () {
+  return ''
 }

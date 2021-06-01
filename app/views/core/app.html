@@ -1,49 +1,48 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <base target="_top">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <?!= include('views/core/display/lib.display.styles.css'); ?>
-    <style>
-      <?!= include('views/core/app.styles.css'); ?>
-    </style>
-  </head>
-  
-  <body>
-    <nav class="nav">
-      <div class="nav-wrapper">
-        <a data-target="sidenav" class="sidenav-trigger"><i class="material-icons">menu</i></a>
-        <a class="brand-logo">NHS Tracker</a>
+  <base target="_top">
+
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css"
+    integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <?!= include('views/core/display/lib.display.styles.css'); ?>
+  <?!= include('views/core/app.styles.css'); ?>
+</head>
+
+<body>
+  <nav class="nav">
+    <div class="nav-wrapper">
+      <a data-target="sidenav" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+      <a class="brand-logo">NHS Tracker</a>
+    </div>
+  </nav>
+
+  <?!= include('views/core/app.sidebar'); ?>
+
+  <form class="application" onsubmit="return false;">
+    <header id="app-header"></header>
+    <main id="app-main"></main>
+    <footer id="app-footer"></footer>
+    <div class="app-loading-overlay">
+      <div class="progress">
+        <div class="indeterminate"></div>
       </div>
-    </nav>
-      
-    <?!= include('views/core/app.sidebar'); ?>
+    </div>
+  </form>
 
-    <form class="application" onsubmit="return false;">
-      <header id="app-header"></header>
-      <main id="app-main"></main>
-      <footer id="app-footer"></footer>
-      <div class="app-loading-overlay">
-        <div class="progress">
-          <div class="indeterminate"></div>
-        </div>
-      </div>
-    </form>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.17.0/dist/jquery.validate.min.js"></script>
+  <script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/js/materialize.min.js"></script>
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <?!= include('views/core/display/lib.display.client.js'); ?>
+  <?!= include('views/core/display/lib.display.forms.client.js'); ?>
+  <?!= include('views/core/app.client.js'); ?>
+</body>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.17.0/dist/jquery.validate.min.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/js/materialize.min.js"></script>
-    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <?!= include('views/core/display/lib.display.client.js'); ?>
-    <?!= include('views/core/display/lib.display.forms.client.js'); ?>
-    <script>
-      <?!= include('views/core/app.client.js'); ?>
-      google.charts.load('current', {packages: ['corechart', 'bar']});
-    </script>
-  </body>
 </html>

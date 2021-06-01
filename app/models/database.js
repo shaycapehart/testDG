@@ -15,18 +15,18 @@
  */
 
 
- /**
-  * Base class for interacting with the database.
-  * 
-  * The 'database' is a sheet in a Google Sheets spreadsheet that is borken up
-  * into sections based on the first row of the database sheet. Records are
-  * stored as rows in the sheet and columns represent fields. The second row of
-  * the sheet defines the field names, the third row provides space for storing
-  * field metadata and records begin on the fourth row. The layout of the sheet
-  * is stored in the Configuration object. This class provides methods for
-  * reading and writing values to the sections of the sheet.
-  */
-var Database = function() {
+/**
+ * Base class for interacting with the database.
+ * 
+ * The 'database' is a sheet in a Google Sheets spreadsheet that is borken up
+ * into sections based on the first row of the database sheet. Records are
+ * stored as rows in the sheet and columns represent fields. The second row of
+ * the sheet defines the field names, the third row provides space for storing
+ * field metadata and records begin on the fourth row. The layout of the sheet
+ * is stored in the Configuration object. This class provides methods for
+ * reading and writing values to the sections of the sheet.
+ */
+var Database = function () {
   /**
    * A SpreadsheetHelper object for interacting with the database sheet in the
    * spreadsheet document.
@@ -34,22 +34,22 @@ var Database = function() {
    * @type {SpreadsheetHelper} A SpreadsheetHelper object for interacting with
    *    the database sheet.
    */
-  this.spreadsheet = new SpreadsheetHelper(Configuration.databaseSheetName);
+  this.spreadsheet = new SpreadsheetHelper(Configuration.databaseSheetName)
 
   /**
    * A JSON-object containing the database section names and metadata.
    * 
    * @type {JSON} The database section names and metadata.
    */
-  this.sections = this.getSectionMetadata_();
+  this.sections = this.getSectionMetadata_()
 
   /**
    * A row-indexed 2D array containing the database records.
    * 
    * @type {Array[][]} The database records.
    */
-  this.data = this.getData();
-};
+  this.data = this.getData()
+}
 
 
 /**
@@ -61,13 +61,13 @@ var Database = function() {
  * 
  * @returns {Array[][]} The database records.
  */
-Database.prototype.getData = function() {
-  var contents = this.spreadsheet.getSheetContents();
-  contents = contents.slice(Configuration.layout.dataStart - 1);
-  return contents.filter(function(element) {
-    if (element[0] !== '') return true;
-    return false;
-  });
+Database.prototype.getData = function () {
+  var contents = this.spreadsheet.getSheetContents()
+  contents = contents.slice(Configuration.layout.dataStart - 1)
+  return contents.filter(function (element) {
+    if (element[0] !== '') return true
+    return false
+  })
 }
 
 
@@ -78,40 +78,40 @@ Database.prototype.getData = function() {
  * @param {String} section The section name.
  * @returns {DataSet} The data and field names for the given section.
  */
-Database.prototype.getDataBySection = function(section) {
+Database.prototype.getDataBySection = function (section) {
   var fields = this.getFieldNames(),
-      fieldNames = [],
-      data = [];
+    fieldNames = [],
+    data = []
   for (var i = 0; i < this.data.length; i++) {
     var row = this.data[i],
-        dataRow = [],
-        rosterStart = (this.sections.roster.start - 1);
-    
+      dataRow = [],
+      rosterStart = (this.sections.roster.start - 1)
+
     // Add roster data
     for (var j = rosterStart; j < this.sections.roster.range; j++) {
-      if (i === 0) fieldNames.push(fields[j]);
-      dataRow.push(row[j]);
+      if (i === 0) fieldNames.push(fields[j])
+      dataRow.push(row[j])
     }
-    
+
     // Add membership status, if not getting data from member information
     if (section !== 'memberInformation') {
-      var status = (this.sections.memberInformation.fields.membershipStatus - 1);
-      if (i === 0) fieldNames.push(fields[status]);
-      dataRow.push(row[status]);
+      var status = (this.sections.memberInformation.fields.membershipStatus - 1)
+      if (i === 0) fieldNames.push(fields[status])
+      dataRow.push(row[status])
     }
-    
+
     // Add section data
     var col = (this.sections[section].start - 1),
-        range = (col + this.sections[section].range);
+      range = (col + this.sections[section].range)
     for (col; col < range; col++) {
       if (fields[col] !== '') {
-        if (i === 0) fieldNames.push(fields[col]);
-        dataRow.push(row[col]);
+        if (i === 0) fieldNames.push(fields[col])
+        dataRow.push(row[col])
       }
     }
-    data.push(dataRow);
+    data.push(dataRow)
   }
-  return new DataSet(data, fieldNames);
+  return new DataSet(data, fieldNames)
 }
 
 
@@ -120,8 +120,8 @@ Database.prototype.getDataBySection = function(section) {
  * 
  * @returns {Array} The field names.
  */
-Database.prototype.getFieldNames = function() {
-  return this.spreadsheet.getRow(Configuration.layout.fields)[0];
+Database.prototype.getFieldNames = function () {
+  return this.spreadsheet.getRow(Configuration.layout.fields)[0]
 }
 
 
@@ -132,13 +132,13 @@ Database.prototype.getFieldNames = function() {
  * @param {String} section The section name.
  * @returns {Integer} The column number, or 0 if there is no empty column.
  */
-Database.prototype.getNextFieldIndex = function(section) {
+Database.prototype.getNextFieldIndex = function (section) {
   var sectionData = this.sections[section],
-      numFields = Object.keys(sectionData.fields).length,
-      nextIndex = (sectionData.start + numFields);
+    numFields = Object.keys(sectionData.fields).length,
+    nextIndex = (sectionData.start + numFields)
   // Return 0 if there is no new field for the current section
-  nextIndex = (nextIndex <= sectionData.range) ? nextIndex : 0;
-  return nextIndex;
+  nextIndex = (nextIndex <= sectionData.range) ? nextIndex : 0
+  return nextIndex
 }
 
 
@@ -147,8 +147,8 @@ Database.prototype.getNextFieldIndex = function(section) {
  * 
  * @returns {Integer} The row number.
  */
-Database.prototype.getNextRecordIndex = function() {
-  return (this.data.length + Configuration.layout.dataStart);
+Database.prototype.getNextRecordIndex = function () {
+  return (this.data.length + Configuration.layout.dataStart)
 }
 
 
@@ -157,12 +157,12 @@ Database.prototype.getNextRecordIndex = function() {
  * 
  * @returns {Integer} The roster id of the next empty record.
  */
-Database.prototype.getNextRosterId = function() {
+Database.prototype.getNextRosterId = function () {
   if (this.data.length > 0) {
-    var lastRosterId = this.data.slice(-1)[0][0];
-    return (lastRosterId + 1);
+    var lastRosterId = this.data.slice(-1)[0][0]
+    return (lastRosterId + 1)
   } else {
-    return Configuration.startingRosterId;
+    return Configuration.startingRosterId
   }
 }
 
@@ -174,13 +174,13 @@ Database.prototype.getNextRosterId = function() {
  * @param {Array=} fields The field names. (optional)
  * @returns {Array} The record data.
  */
-Database.prototype.getRecordById = function(id, fields) {
-  var rowIndex = (this.getRowById(id) - Configuration.layout.dataStart);
+Database.prototype.getRecordById = function (id, fields) {
+  var rowIndex = (this.getRowById(id) - Configuration.layout.dataStart)
   if (typeof fields !== 'undefined') {
-    var selected = this.getSelectedFields(fields);
-    return selected.getData()[rowIndex];
+    var selected = this.getSelectedFields(fields)
+    return selected.getData()[rowIndex]
   } else {
-    return this.data[rowIndex];
+    return this.data[rowIndex]
   }
 }
 
@@ -192,9 +192,9 @@ Database.prototype.getRecordById = function(id, fields) {
  * @param {Integer|String} id The roster id number.
  * @returns {Integer} The row index.
  */
-Database.prototype.getRowById = function(id) {
-  id = (typeof id === 'string') ? parseInt(id, 10) : id;
-  return (this.data.getRowIndexOf2D(id) + Configuration.layout.dataStart);
+Database.prototype.getRowById = function (id) {
+  id = (typeof id === 'string') ? parseInt(id, 10) : id
+  return (this.data.getRowIndexOf2D(id) + Configuration.layout.dataStart)
 }
 
 
@@ -204,20 +204,20 @@ Database.prototype.getRowById = function(id) {
  * @param {Array} fields The field names.
  * @returns {DataSet} The data for the selected fields.
  */
-Database.prototype.getSelectedFields = function(fields) {
-  var selectedFields = [];
+Database.prototype.getSelectedFields = function (fields) {
+  var selectedFields = []
   for (var i = 0; i < this.data.length; i++) {
-    var row = this.data[i];
-    var selectedRow = [];
-    for (var j = 0; j < row.length; j++) {
-      var colNum = (j + 1);
-      if (fields.indexOf(colNum) > -1) {
-        selectedRow.push(row[j]);
+    var row = this.data[i]
+    var selectedRow = []
+    for (var j = 0; j < fields.length; j++) {
+      var colNum = fields[j] - 1
+      if (colNum < row.length) {
+        selectedRow.push(row[colNum])
       }
     }
-    selectedFields.push(selectedRow);
+    selectedFields.push(selectedRow)
   }
-  return new DataSet(selectedFields);
+  return new DataSet(selectedFields)
 }
 
 
@@ -228,9 +228,9 @@ Database.prototype.getSelectedFields = function(fields) {
  * @param {String} field The field to search.
  * @returns {Boolean} True if found, otherwise, False.
  */
-Database.prototype.hasField = function(section, field) {
-  var section = this.sections[section];
-  return section.fields.hasOwnProperty(field);
+Database.prototype.hasField = function (section, field) {
+  var section = this.sections[section]
+  return section.fields.hasOwnProperty(field)
 }
 
 
@@ -247,28 +247,28 @@ Database.prototype.hasField = function(section, field) {
  * 
  * @param {Object} entries The entry data to insert into the database.
  */
-Database.prototype.setFieldData = function(entries) {
+Database.prototype.setFieldData = function (entries) {
   // Ensure that roster ids are integers; needed for comparison
-  entries.rosterIds = entries.rosterIds.map(function(x) {
-    return parseInt(x, 10);
-  });
+  entries.rosterIds = entries.rosterIds.map(function (x) {
+    return parseInt(x, 10)
+  })
   // Loop over the rows of data
   for (var i = 0; i < this.data.length; i++) {
-    var row = this.data[i];
-    var dataIndex = entries.rosterIds.indexOf(row[0]);
+    var row = this.data[i]
+    var dataIndex = entries.rosterIds.indexOf(row[0])
     // Loop over columns only if current row matches a roster id in the data
     if (dataIndex > -1) {
       for (var j = 0; j < row.length; j++) {
-        var currentColNum = (j + 1);
-        var field = entries.fields.find(function(obj) {
-          return obj.fieldIndex === currentColNum;
-        });
+        var currentColNum = (j + 1)
+        var field = entries.fields.find(function (obj) {
+          return obj.fieldIndex === currentColNum
+        })
         if (field) {
           var rowIndex = this.getRowById(entries.rosterIds[dataIndex]),
-              colIndex = currentColNum,
-              value = field.data[dataIndex],
-              note = (field.hasOwnProperty('notes') ? field.notes[dataIndex] : '');
-          this.spreadsheet.setCell(rowIndex, colIndex, value, note);
+            colIndex = currentColNum,
+            value = field.data[dataIndex],
+            note = (field.hasOwnProperty('notes') ? field.notes[dataIndex] : '')
+          this.spreadsheet.setCell(rowIndex, colIndex, value, note)
         }
       }
     }
@@ -292,13 +292,13 @@ Database.prototype.setFieldData = function(entries) {
  * @param {String} subtitle The field metadata, visible in the spreadsheet.
  * @returns {Integer} The column index of the inserted field.
  */
-Database.prototype.setFieldHeader = function(section, title, titleMeta, subtitle) {
-  var index = this.getNextFieldIndex(section);
-  this.spreadsheet.setCell(Configuration.layout.fields, index, title, titleMeta);
+Database.prototype.setFieldHeader = function (section, title, titleMeta, subtitle) {
+  var index = this.getNextFieldIndex(section)
+  this.spreadsheet.setCell(Configuration.layout.fields, index, title, titleMeta)
   if (subtitle) {
-    this.spreadsheet.setCell(Configuration.layout.fieldMeta, index, subtitle);
+    this.spreadsheet.setCell(Configuration.layout.fieldMeta, index, subtitle)
   }
-  return index;
+  return index
 }
 
 
@@ -312,11 +312,11 @@ Database.prototype.setFieldHeader = function(section, title, titleMeta, subtitle
  * @param {Object} record The record data.
  * @returns {Integer} The row index of the inserted record.
  */
-Database.prototype.setRecord = function(record) {
-  var index = this.getNextRecordIndex();
-  record.rosterId = this.getNextRosterId();
-  this.writeRecord_(index, record);
-  return index;
+Database.prototype.setRecord = function (record) {
+  var index = this.getNextRecordIndex()
+  record.rosterId = this.getNextRosterId()
+  this.writeRecord_(index, record)
+  return index
 }
 
 
@@ -327,10 +327,10 @@ Database.prototype.setRecord = function(record) {
  * @param {Object} record The record data.
  * @returns {Integer} The row index of the updated record.
  */
-Database.prototype.updateRecord = function(record) {
-  var index = this.getRowById(record.rosterId);
-  this.writeRecord_(index, record);
-  return index;
+Database.prototype.updateRecord = function (record) {
+  var index = this.getRowById(record.rosterId)
+  this.writeRecord_(index, record)
+  return index
 }
 
 
@@ -347,39 +347,39 @@ Database.prototype.updateRecord = function(record) {
  * @private
  * @returns {Object} The database section names and metadata.
  */
-Database.prototype.getSectionMetadata_ = function() {
+Database.prototype.getSectionMetadata_ = function () {
   // Get the section and field header rows from the spreadsheet
   var sectionData = {},
-      sections = this.spreadsheet.getRow(Configuration.layout.sections)[0],
-      fields = this.getFieldNames();
-  
+    sections = this.spreadsheet.getRow(Configuration.layout.sections)[0],
+    fields = this.getFieldNames()
+
   // Create the section objects
-  var colNum = 1;
-  var currentSection = '';
+  var colNum = 1
+  var currentSection = ''
   for (var i = 0; i < sections.length; i++) {
     var field = fields[i],
-        section = sections[i];
-    
+      section = sections[i]
+
     // The start of a new section
     if (section !== '') {
-      currentSection = section.toCamelCase();
+      currentSection = section.toCamelCase()
       sectionData[currentSection] = {
         start: colNum,
         range: 1,
         fields: {},
-      };
-    // Working within the current section
+      }
+      // Working within the current section
     } else {
-      sectionData[currentSection].range += 1;
+      sectionData[currentSection].range += 1
     }
 
     // Add the field, if not empty
     if (field !== '') {
-      sectionData[currentSection].fields[field.toCamelCase()] = colNum;
+      sectionData[currentSection].fields[field.toCamelCase()] = colNum
     }
-    colNum += 1;
+    colNum += 1
   }
-  return sectionData;
+  return sectionData
 }
 
 
@@ -392,16 +392,16 @@ Database.prototype.getSectionMetadata_ = function() {
  * @param {Integer} index The row index of the record.
  * @param {Object} record The record data.
  */
-Database.prototype.writeRecord_ = function(index, record) {
-  var section;
+Database.prototype.writeRecord_ = function (index, record) {
+  var section
   for (var field in record) {
     if (this.hasField('memberInformation', field)) {
-      section = this.sections.memberInformation;
+      section = this.sections.memberInformation
     } else if (this.hasField('financial', field)) {
-      section = this.sections.financial;
+      section = this.sections.financial
     } else {
-      section = this.sections.roster;
+      section = this.sections.roster
     }
-    this.spreadsheet.setCell(index, section.fields[field], record[field]);
+    this.spreadsheet.setCell(index, section.fields[field], record[field])
   }
 }

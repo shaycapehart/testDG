@@ -21,20 +21,20 @@
  * @returns {String} The preloader.
  */
 function getChartPreloader() {
-  return '' +
-    '<div class="preloader-wrapper big active">' +
-      '<div class="spinner-layer spinner-blue-only">' +
-        '<div class="circle-clipper left">' +
-          '<div class="circle"></div>' +
-        '</div>' +
-        '<div class="gap-patch">' +
-          '<div class="circle"></div>' +
-        '</div>' +
-        '<div class="circle-clipper right">' +
-          '<div class="circle"></div>' +
-        '</div>' +
-      '</div>' +
-    '</div>';
+  return `
+    <div class="preloader-wrapper big active">
+      <div class="spinner-layer spinner-blue-only">
+        <div class="circle-clipper left">
+          <div class="circle"></div>
+        </div>
+        <div class="gap-patch">
+          <div class="circle"></div>
+        </div>
+        <div class="circle-clipper right">
+          <div class="circle"></div>
+        </div>
+      </div>
+    </div>`
 }
 
 
@@ -45,7 +45,10 @@ function getChartPreloader() {
  * @returns {String} The date as a formatted string.
  */
 function getDateString(date) {
-  return (date.getMonthName() + ' ' + date.getDate() + ', ' + date.getFullYear());
+  var mmm = date.getMonthName()
+  var dd = date.getDate()
+  var yyyy = date.getFullYear()
+  return (`${mmm} ${dd}, ${yyyy}`)
 }
 
 
@@ -56,8 +59,8 @@ function getDateString(date) {
  * @returns {String} The color name corresponding to the given dollar amount.
  */
 function getDollarColor(amount) {
-  if (amount === 0) return 'green';
-  if (amount > 0) return 'yellow';
+  if (amount === 0) return 'green'
+  if (amount > 0) return 'yellow'
 }
 
 
@@ -68,7 +71,7 @@ function getDollarColor(amount) {
  * @returns {String} The dollar amount as a formatted string.
  */
 function getDollarString(amount) {
-  return ('$' + amount);
+  return ('$' + amount)
 }
 
 
@@ -83,11 +86,11 @@ function getHoursColor(hours) {
     [40, 'green'],
     [30, 'yellow'],
     [0, 'red']
-  ];
-  var color = colors.find(function(colorInfo) {
-    return (hours >= colorInfo[0]);
-  });
-  return color[1];
+  ]
+  var color = colors.find(function (colorInfo) {
+    return (hours >= colorInfo[0])
+  })
+  return color[1]
 }
 
 
@@ -102,11 +105,11 @@ function getPercentColor(percent) {
     [0.9, 'green'],
     [0.8, 'yellow'],
     [0.0, 'red']
-  ];
-  var color = colors.find(function(colorInfo) {
-    return (percent >= colorInfo[0]);
-  });
-  return color[1];
+  ]
+  var color = colors.find(function (colorInfo) {
+    return (percent >= colorInfo[0])
+  })
+  return color[1]
 }
 
 
@@ -117,7 +120,8 @@ function getPercentColor(percent) {
  * @returns {String} The formatted percent with % symbol appended.
  */
 function getPercentString(percent) {
-  return (Math.round(percent * 100) + '%');
+  var percentAsInt = Math.round(percent * 100)
+  return `${percentAsInt}%`
 }
 
 
@@ -129,15 +133,15 @@ function getPercentString(percent) {
  * @returns {String} The data as an HTML-formatted string of table rows.
  */
 function getRowsFromData(data) {
-  var rows = '';
+  var rows = ''
   for (var i = 0; i < data.length; i++) {
-    var row = '' +
-      '<div class="tile-table-row">' +
-        data[i] +
-      '</div>';
-    rows += row;
+    var row = `
+      <div class="tile-table-row">
+        ${data[i]}
+      </div>`
+    rows += row
   }
-  return rows;
+  return rows
 }
 
 
@@ -148,8 +152,8 @@ function getRowsFromData(data) {
  * @returns {String} The color name corresponding to the given value.
  */
 function getYesNoColor(value) {
-  if (value === 'yes') return 'green';
-  if (value === 'no') return 'red';
+  if (value === 'yes') return 'green'
+  if (value === 'no') return 'red'
 }
 
 
@@ -159,7 +163,7 @@ function getYesNoColor(value) {
  * @param {String} message The log message.
  */
 function log(message) {
-  Logger.log(message);
+  Logger.log(message)
 }
 
 
@@ -168,12 +172,12 @@ function log(message) {
  * 
  * @returns {String} The string in camel case.
  */
-String.prototype.toCamelCase = function() {
-  return this.replace(/(?:^\w|[A-Z]|\b\w|\s+)/g, function(match, index) {
-    if (+match === 0) return "";
-    return index == 0 ? match.toLowerCase() : match.toUpperCase();
-  });
-};
+String.prototype.toCamelCase = function () {
+  return this.replace(/(?:^\w|[A-Z]|\b\w|\s+)/g, function (match, index) {
+    if (+match === 0) return ""
+    return index == 0 ? match.toLowerCase() : match.toUpperCase()
+  })
+}
 
 
 /**
@@ -182,14 +186,14 @@ String.prototype.toCamelCase = function() {
  * @param {Array} element The value to search.
  * @returns {Integer} The row index, or -1 if the element is not found.
  */
-Array.prototype.getRowIndexOf2D = function(element) {
+Array.prototype.getRowIndexOf2D = function (element) {
   for (var i = 0; i < this.length; i++) {
-    var index = this[i].indexOf(element);
+    var index = this[i].indexOf(element)
     if (index > -1) {
-      return i;
+      return i
     }
   }
-};
+}
 
 
 /**
@@ -206,27 +210,27 @@ Array.prototype.getRowIndexOf2D = function(element) {
  */
 if (!Array.prototype.find) {
   Object.defineProperty(Array.prototype, 'find', {
-    value: function(predicate) {
-     // 1. Let O be ? ToObject(this value).
+    value: function (predicate) {
+      // 1. Let O be ? ToObject(this value).
       if (this == null) {
-        throw new TypeError('"this" is null or not defined');
+        throw new TypeError('"this" is null or not defined')
       }
 
-      var o = Object(this);
+      var o = Object(this)
 
       // 2. Let len be ? ToLength(? Get(O, "length")).
-      var len = o.length >>> 0;
+      var len = o.length >>> 0
 
       // 3. If IsCallable(predicate) is false, throw a TypeError exception.
       if (typeof predicate !== 'function') {
-        throw new TypeError('predicate must be a function');
+        throw new TypeError('predicate must be a function')
       }
 
       // 4. If thisArg was supplied, let T be thisArg; else let T be undefined.
-      var thisArg = arguments[1];
+      var thisArg = arguments[1]
 
       // 5. Let k be 0.
-      var k = 0;
+      var k = 0
 
       // 6. Repeat, while k < len
       while (k < len) {
@@ -234,20 +238,20 @@ if (!Array.prototype.find) {
         // b. Let kValue be ? Get(O, Pk).
         // c. Let testResult be ToBoolean(? Call(predicate, T, « kValue, k, O »)).
         // d. If testResult is true, return kValue.
-        var kValue = o[k];
+        var kValue = o[k]
         if (predicate.call(thisArg, kValue, k, o)) {
-          return kValue;
+          return kValue
         }
         // e. Increase k by 1.
-        k++;
+        k++
       }
 
       // 7. Return undefined.
-      return undefined;
+      return undefined
     },
     configurable: true,
     writable: true
-  });
+  })
 }
 
 
@@ -256,21 +260,21 @@ if (!Array.prototype.find) {
  * 
  * @returns {String} The 3-character name of the month.
  */
-Date.prototype.getMonthName = function() {
+Date.prototype.getMonthName = function () {
   var month = this.getMonth(),
-      months = [
-        'Jan',
-        'Feb',
-        'Mar',
-        'Apr',
-        'May',
-        'Jun',
-        'Jul',
-        'Aug',
-        'Sep',
-        'Oct',
-        'Nov',
-        'Dec'
-      ];
-  return months[month];
+    months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec'
+    ]
+  return months[month]
 }

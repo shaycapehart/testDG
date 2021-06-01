@@ -21,8 +21,8 @@
  * @returns {Object} The chart data.
  */
 function getCharts() {
-  var dashboard = new Dashboard();
-  return dashboard.getCharts();
+  var dashboard = new Dashboard()
+  return dashboard.getCharts()
 }
 
 
@@ -31,11 +31,11 @@ function getCharts() {
 /**
  * Controller for the 'Dashboard' page.
  */
-var Dashboard = function() {
-  this._db = new Database();
-  this._pageTitle = 'Dashboard';
-  this._counts = this.getCounts_();
-};
+var Dashboard = function () {
+  this._db = new Database()
+  this._pageTitle = 'Dashboard'
+  this._counts = this.getCounts_()
+}
 
 
 /**
@@ -43,8 +43,8 @@ var Dashboard = function() {
  * 
  * @returns {String} The page header.
  */
-Dashboard.prototype.getHeader = function() {
-  return '<h1>' + this._pageTitle + '</h1>';
+Dashboard.prototype.getHeader = function () {
+  return '<h1>' + this._pageTitle + '</h1>'
 }
 
 
@@ -53,202 +53,202 @@ Dashboard.prototype.getHeader = function() {
  * 
  * @returns {String} The main content of the page.
  */
-Dashboard.prototype.getMain = function() {
+Dashboard.prototype.getMain = function () {
   var unpaidMembersFirstName = this._counts.financial.unpaidMembersFirstName,
-      unpaidMembersLastName = this._counts.financial.unpaidMembersLastName,
-      unpaidFeesMembers = unpaidMembersFirstName.map(function(e, i) {
-        return (e + ' ' + unpaidMembersLastName[i]);
-      });
+    unpaidMembersLastName = this._counts.financial.unpaidMembersLastName,
+    unpaidFeesMembers = unpaidMembersFirstName.map(function (e, i) {
+      return (e + ' ' + unpaidMembersLastName[i])
+    })
   return '' +
     // Member Information
-      '<div class="tile-wrapper">' +
-        '<div class="tile tile-full-width">' +
-          '<h5 class="tile-title">Member Information</h5>' +
-          '<div class="tile-section">' +
-            '<div class="tile-chart" id="chart_gender">' +
-              getChartPreloader() +
-            '</div>' +
-            '<div class="tile-chart" id="chart_grade">' +
-              getChartPreloader() +
-            '</div>' +
-          '</div>' +
-          '<div class="tile-section">' +
-            '<div class="tile-table">' +
-              '<div class="tile-table-row">' +
-                '<i class="fas fa-fw fa-2x fa-female"></i>' +
-                '<span class="tile-table-row-title">Females</span>' +
-                '<span>' + this._counts.members.females + '</span>' +
-              '</div>' +
-              '<div class="tile-table-row">' +
-                '<i class="fas fa-fw fa-2x fa-male"></i>' +
-                '<span class="tile-table-row-title">Males</span>' +
-                '<span>' + this._counts.members.males + '</span>' +
-              '</div>' +
-              '<div class="tile-table-divider"></div>' +
-              '<div class="tile-table-row">' +
-                '<i class="fas fa-fw fa-2x fa-user-graduate"></i>' +
-                '<span class="tile-table-row-title">Sophomores</span>' +
-                '<span>' + this._counts.members.sophomores + '</span>' +
-              '</div>' +
-              '<div class="tile-table-row">' +
-                '<i class="fas fa-fw fa-2x fa-user-graduate"></i>' +
-                '<span class="tile-table-row-title">Juniors</span>' +
-                '<span>' + this._counts.members.juniors + '</span>' +
-              '</div>' +
-              '<div class="tile-table-row">' +
-                '<i class="fas fa-fw fa-2x fa-user-graduate"></i>' +
-                '<span class="tile-table-row-title">Seniors</span>' +
-                '<span>' + this._counts.members.seniors + '</span>' +
-              '</div>' +
-            '</div>' +
-          '</div>' +
-        '</div>' +
-      '</div>' +
+    `<div class="tile-wrapper">
+        <div class="tile tile-full-width">
+          <h5 class="tile-title">Member Information</h5>
+          <div class="tile-section">
+            <div class="tile-chart" id="chart_gender">
+            ${getChartPreloader()}
+            </div>
+            <div class="tile-chart" id="chart_grade">
+            ${getChartPreloader()}
+            </div>
+          </div>
+          <div class="tile-section">
+            <div class="tile-table">
+              <div class="tile-table-row">
+                <i class="fas fa-fw fa-2x fa-female"></i>
+                <span class="tile-table-row-title">Females</span>
+                <span>${this._counts.members.females}</span>
+              </div>
+              <div class="tile-table-row">
+                <i class="fas fa-fw fa-2x fa-male"></i>
+                <span class="tile-table-row-title">Males</span>
+                <span>${this._counts.members.males}</span>
+              </div>
+              <div class="tile-table-divider"></div>
+              <div class="tile-table-row">
+                <i class="fas fa-fw fa-2x fa-user-graduate"></i>
+                <span class="tile-table-row-title">Sophomores</span>
+                <span>${this._counts.members.sophomores}</span>
+              </div>
+              <div class="tile-table-row">
+                <i class="fas fa-fw fa-2x fa-user-graduate"></i>
+                <span class="tile-table-row-title">Juniors</span>
+                <span>${this._counts.members.juniors}</span>
+              </div>
+              <div class="tile-table-row">
+                <i class="fas fa-fw fa-2x fa-user-graduate"></i>
+                <span class="tile-table-row-title">Seniors</span>
+                <span>${this._counts.members.seniors}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>` +
 
     // Community Service Hours
-      '<div class="tile-wrapper">' +
-        '<div class="tile">' +
-          '<h5 class="tile-title">Community Service Hours</h5>' +
-          '<div class="tile-section">' +
-            '<div class="tile-chart" id="chart_hours">' +
-              getChartPreloader() +
-            '</div>' +
-          '</div>' +
-          '<div class="tile-section">' +
-            '<div class="tile-table">' +
-              '<div class="tile-table-row">' +
-                '<i class="fas fa-fw fa-2x fa-people-carry"></i>' +
-                '<span class="tile-table-row-title">Q1 Hours</span>' +
-                '<span>' + this._counts.service.q1total + '</span>' +
-              '</div>' +
-              '<div class="tile-table-row">' +
-                '<i class="fas fa-fw fa-2x fa-people-carry"></i>' +
-                '<span class="tile-table-row-title">Q2 Hours</span>' +
-                '<span>' + this._counts.service.q2total + '</span>' +
-              '</div>' +
-              '<div class="tile-table-row">' +
-                '<i class="fas fa-fw fa-2x fa-people-carry"></i>' +
-                '<span class="tile-table-row-title">Q3 Hours</span>' +
-                '<span>' + this._counts.service.q3total + '</span>' +
-              '</div>' +
-              '<div class="tile-table-row">' +
-                '<i class="fas fa-fw fa-2x fa-people-carry"></i>' +
-                '<span class="tile-table-row-title">Q4 Hours</span>' +
-                '<span>' + this._counts.service.q4total + '</span>' +
-              '</div>' +
-              '<div class="tile-table-divider"></div>' +
-              '<div class="tile-table-row">' +
-                '<i class="fas fa-fw fa-2x fa-users"></i>' +
-                '<span class="tile-table-row-title">Total Hours</span>' +
-                '<span>' + this._counts.service.total + '</span>' +
-              '</div>' +
-            '</div>' +
-          '</div>' +
-        '</div>' +
+    `<div class="tile-wrapper">
+        <div class="tile">
+          <h5 class="tile-title">Community Service Hours</h5>
+          <div class="tile-section">
+            <div class="tile-chart" id="chart_hours">
+              ${getChartPreloader()}
+            </div>
+          </div>
+          <div class="tile-section">
+            <div class="tile-table">
+              <div class="tile-table-row">
+                <i class="fas fa-fw fa-2x fa-people-carry"></i>
+                <span class="tile-table-row-title">Q1 Hours</span>
+                <span>${this._counts.service.q1total}</span>
+              </div>
+              <div class="tile-table-row">
+                <i class="fas fa-fw fa-2x fa-people-carry"></i>
+                <span class="tile-table-row-title">Q2 Hours</span>
+                <span>${this._counts.service.q2total}</span>
+              </div>
+              <div class="tile-table-row">
+                <i class="fas fa-fw fa-2x fa-people-carry"></i>
+                <span class="tile-table-row-title">Q3 Hours</span>
+                <span>${this._counts.service.q3total}</span>
+              </div>
+              <div class="tile-table-row">
+                <i class="fas fa-fw fa-2x fa-people-carry"></i>
+                <span class="tile-table-row-title">Q4 Hours</span>
+                <span>${this._counts.service.q4total}</span>
+              </div>
+              <div class="tile-table-divider"></div>
+              <div class="tile-table-row">
+                <i class="fas fa-fw fa-2x fa-users"></i>
+                <span class="tile-table-row-title">Total Hours</span>
+                <span>${this._counts.service.total}</span>
+              </div>
+            </div>
+          </div>
+        </div>` +
 
-      // Member Fees
-        '<div class="tile">' +
-          '<h5 class="tile-title">Member Fees</h5>' +
-          '<div class="tile-section">' +
-            '<div class="tile-chart" id="chart_fees">' +
-              getChartPreloader() +
-            '</div>' +
-          '</div>' +
-          '<div class="tile-section">' +
-            '<div class="tile-table">' +
-              '<div class="tile-table-row">' +
-                '<i class="fas fa-fw fa-2x fa-dollar-sign"></i>' +
-                '<span class="tile-table-row-title">Fees Paid</span>' +
-                '<span>' + Math.round(this._counts.financial.paidFees / this._counts.members.total * 100) + '%</span>' +
-              '</div>' +
-            '</div>' +
-          '</div>' +
-          '<div class="tile-section">' +
-            '<h6>Unpaid Fees</h6>' +
-            '<div class="tile-table tile-table-scroll">' +
-              getRowsFromData(unpaidFeesMembers) +
-            '</div>' +
-          '</div>' +
-        '</div>' +
-      '</div>' +
+    // Member Fees
+    `<div class="tile">
+          <h5 class="tile-title">Member Fees</h5>
+          <div class="tile-section">
+            <div class="tile-chart" id="chart_fees">
+              ${getChartPreloader()}
+            </div>
+          </div>
+          <div class="tile-section">
+            <div class="tile-table">
+              <div class="tile-table-row">
+                <i class="fas fa-fw fa-2x fa-dollar-sign"></i>
+                <span class="tile-table-row-title">Fees Paid</span>
+                <span>${Math.round(this._counts.financial.paidFees / this._counts.members.total * 100)}%</span>
+              </div>
+            </div>
+          </div>
+          <div class="tile-section">
+            <h6>Unpaid Fees</h6>
+            <div class="tile-table tile-table-scroll">
+              ${getRowsFromData(unpaidFeesMembers)}
+            </div>
+          </div>
+        </div>
+      </div>` +
 
     // Fundraising
-      '<div class="tile-wrapper">' +
-        '<div class="tile tile-full-width">' +
-          '<h5 class="tile-title">Fundraising</h5>' +
-          '<div class="tile-section">' +
-            '<div class="tile-chart" id="chart_fundraising">' +
-              getChartPreloader() +
-            '</div>' +
-          '</div>' +
-          '<div class="tile-section">' +
-            '<div class="tile-table">' +
-              '<div class="tile-table-row">' +
-                '<i class="fas fa-fw fa-2x fa-money-bill-wave"></i>' +
-                '<span class="tile-table-row-title">Amount Out</span>' +
-                '<span>$' + this._counts.financial.checkedOut + '</span>' +
-              '</div>' +
-              '<div class="tile-table-row">' +
-                '<i class="fas fa-fw fa-2x fa-money-bill-wave"></i>' +
-                '<span class="tile-table-row-title">Amount In</span>' +
-                '<span>$' + this._counts.financial.checkedIn + '</span>' +
-              '</div>' +
-            '</div>' +
-          '</div>' +
-        '</div>' +
-      '</div>' +
+    `<div class="tile-wrapper">
+        <div class="tile tile-full-width">
+          <h5 class="tile-title">Fundraising</h5>
+          <div class="tile-section">
+            <div class="tile-chart" id="chart_fundraising">
+              ${getChartPreloader()}
+            </div>
+          </div>
+          <div class="tile-section">
+            <div class="tile-table">
+              <div class="tile-table-row">
+                <i class="fas fa-fw fa-2x fa-money-bill-wave"></i>
+                <span class="tile-table-row-title">Amount Out</span>
+                <span>$${this._counts.financial.checkedOut}</span>
+              </div>
+              <div class="tile-table-row">
+                <i class="fas fa-fw fa-2x fa-money-bill-wave"></i>
+                <span class="tile-table-row-title">Amount In</span>
+                <span>$${this._counts.financial.checkedIn}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>` +
 
     // Shirts
-      '<div class="tile-wrapper">' +
-        '<div class="tile tile-full-width">' +
-          '<h5 class="tile-title">Shirts</h5>' +
-          '<div class="tile-section">' +
-            '<div class="tile-chart" id="chart_shirts">' +
-              getChartPreloader() +
-            '</div>' +
-          '</div>' +
-          '<div class="tile-section">' +
-            '<div class="tile-table">' +
-              '<div class="tile-table-row">' +
-                '<i class="fas fa-fw fa-2x fa-tshirt"></i>' +
-                '<span class="tile-table-row-title">S</span>' +
-                '<span>' + this._counts.shirts.small + '</span>' +
-              '</div>' +
-              '<div class="tile-table-row">' +
-                '<i class="fas fa-fw fa-2x fa-tshirt"></i>' +
-                '<span class="tile-table-row-title">M</span>' +
-                '<span>' + this._counts.shirts.medium + '</span>' +
-              '</div>' +
-              '<div class="tile-table-row">' +
-                '<i class="fas fa-fw fa-2x fa-tshirt"></i>' +
-                '<span class="tile-table-row-title">L</span>' +
-                '<span>' + this._counts.shirts.large + '</span>' +
-              '</div>' +
-              '<div class="tile-table-row">' +
-                '<i class="fas fa-fw fa-2x fa-tshirt"></i>' +
-                '<span class="tile-table-row-title">XL</span>' +
-                '<span>' + this._counts.shirts.xlarge + '</span>' +
-              '</div>' +
-              '<div class="tile-table-row">' +
-                '<i class="fas fa-fw fa-2x fa-tshirt"></i>' +  
-                '<span class="tile-table-row-title">XXL</span>' +
-                '<span>' + this._counts.shirts.xxlarge + '</span>' +
-              '</div>' +
-              '<div class="tile-table-row">' +
-                '<i class="fas fa-fw fa-2x fa-tshirt"></i>' +
-                '<span class="tile-table-row-title">XXXL</span>' +
-                '<span>' + this._counts.shirts.xxxlarge + '</span>' +
-              '</div>' +
-              '<div class="tile-table-divider"></div>' +
-              '<div class="tile-table-row">' +
-                '<i class="fas fa-fw fa-2x fa-percent"></i>' +
-                '<span class="tile-table-row-title">Percent Received</span>' +
-                '<span>' + Math.round(this._counts.shirts.received / this._counts.members.total * 100) + '%</span>' +
-              '</div>' +
-            '</div>' +
-          '</div>' +
-        '</div>' +
-      '</div>';
+    `<div class="tile-wrapper">
+        <div class="tile tile-full-width">
+          <h5 class="tile-title">Shirts</h5>
+          <div class="tile-section">
+            <div class="tile-chart" id="chart_shirts">
+            ${getChartPreloader()}
+            </div>
+          </div>
+          <div class="tile-section">
+            <div class="tile-table">
+              <div class="tile-table-row">
+                <i class="fas fa-fw fa-2x fa-tshirt"></i>
+                <span class="tile-table-row-title">S</span>
+                <span>${this._counts.shirts.small}</span>
+              </div>
+              <div class="tile-table-row">
+                <i class="fas fa-fw fa-2x fa-tshirt"></i>
+                <span class="tile-table-row-title">M</span>
+                <span>${this._counts.shirts.medium}</span>
+              </div>
+              <div class="tile-table-row">
+                <i class="fas fa-fw fa-2x fa-tshirt"></i>
+                <span class="tile-table-row-title">L</span>
+                <span>${this._counts.shirts.large}</span>
+              </div>
+              <div class="tile-table-row">
+                <i class="fas fa-fw fa-2x fa-tshirt"></i>
+                <span class="tile-table-row-title">XL</span>
+                <span>${this._counts.shirts.xlarge}</span>
+              </div>
+              <div class="tile-table-row">
+                <i class="fas fa-fw fa-2x fa-tshirt"></i>  
+                <span class="tile-table-row-title">XXL</span>
+                <span>${this._counts.shirts.xxlarge}</span>
+              </div>
+              <div class="tile-table-row">
+                <i class="fas fa-fw fa-2x fa-tshirt"></i>
+                <span class="tile-table-row-title">XXXL</span>
+                <span>${this._counts.shirts.xxxlarge}</span>
+              </div>
+              <div class="tile-table-divider"></div>
+              <div class="tile-table-row">
+                <i class="fas fa-fw fa-2x fa-percent"></i>
+                <span class="tile-table-row-title">Percent Received</span>
+                <span>${Math.round(this._counts.shirts.received / this._counts.members.total * 100)}%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>`
 }
 
 
@@ -257,8 +257,8 @@ Dashboard.prototype.getMain = function() {
  * 
  * @returns {String} The page footer.
  */
-Dashboard.prototype.getFooter = function() {
-  return '&copy; 2018 Joseph W. May';
+Dashboard.prototype.getFooter = function () {
+  return '&copy; 2018 Joseph W. May'
 }
 
 
@@ -268,7 +268,7 @@ Dashboard.prototype.getFooter = function() {
  * 
  * @returns {Object} The chart data.
  */
-Dashboard.prototype.getCharts = function() {
+Dashboard.prototype.getCharts = function () {
   return {
     fees: {
       title: 'Member Fees',
@@ -280,7 +280,7 @@ Dashboard.prototype.getCharts = function() {
       target: 'chart_fees',
       type: 'pieChart'
     },
-  
+
     fundraiser: {
       title: 'Fundraiser Amounts',
       data: [
@@ -344,7 +344,7 @@ Dashboard.prototype.getCharts = function() {
       target: 'chart_shirts',
       type: 'pieChart'
     }
-  };
+  }
 }
 
 
@@ -354,17 +354,17 @@ Dashboard.prototype.getCharts = function() {
  * @private
  * @returns {Object} The field counts.
  */
-Dashboard.prototype.getCounts_ = function() {
+Dashboard.prototype.getCounts_ = function () {
   var memberInformation = this._db.getDataBySection('memberInformation')
-          .filterByField(4, 'active'),
-      service = this._db.getDataBySection('communityService')
-          .filterByField(3, 'active'),
-      financial = this._db.getDataBySection('financial')
-          .filterByField(3, 'active'),
-      unpaidFees = this._db.getDataBySection('financial')
-          .filterByField(3, 'active')
-          .filterByField(8, 'no')
-          .sortByField(1);
+    .filterByField(4, 'active'),
+    service = this._db.getDataBySection('communityService')
+      .filterByField(3, 'active'),
+    financial = this._db.getDataBySection('financial')
+      .filterByField(3, 'active'),
+    unpaidFees = this._db.getDataBySection('financial')
+      .filterByField(3, 'active')
+      .filterByField(8, 'no')
+      .sortByField(1)
   return {
     financial: {
       paidFees: financial.countByField(8, 'yes'),
