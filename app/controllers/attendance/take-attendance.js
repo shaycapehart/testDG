@@ -21,9 +21,9 @@
  * @param {Object} attendance The form values containing the user input.
  * @returns {DisplayObject[]} The app page to display.
  */
- function saveAttendance(attendance) {
-  var takeAttendance = new TakeAttendance();
-  return takeAttendance.saveAttendance(attendance);
+function saveAttendance(attendance) {
+  var takeAttendance = new TakeAttendance()
+  return takeAttendance.saveAttendance(attendance)
 }
 
 
@@ -35,10 +35,10 @@
  * Handles creating the layout for the page sections and for processing the
  * user input by inserting the form data into the database spreadsheet.
  */
-var TakeAttendance = function() {
-  this._db = new Database();
-  this._pageTitle = 'Take Attendance';
-};
+var TakeAttendance = function () {
+  this._db = new Database()
+  this._pageTitle = 'Take Attendance'
+}
 
 
 /**
@@ -46,43 +46,43 @@ var TakeAttendance = function() {
  * 
  * @returns {String} The page header.
  */
-TakeAttendance.prototype.getHeader = function() {
-  return '' +
-    '<h1>' + this._pageTitle +'</h1>' +
-    '<div class="row">' +
-      '<div class="input-field col s12 m5">' +
-        '<input type="text" id="date" name="date" ' +
-            'class="datepicker validate" required>' +
-        '<label for="date">Meeting date</label>' +
-      '</div>' +
-      '<div class="col s12 m6 offset-m1">' +
-        '<h6>Quarter</h6>' +
-        '<div class="selector">' +
-          '<label>' +
-            '<input name="quarter" type="radio" value="1" required>' +
-            '<span class="selector-label">1</span>' +
-          '</label>' +
-          '<label>' +
-            '<input name="quarter" type="radio" value="2">' +
-            '<span class="selector-label">2</span>' +
-          '</label>' +
-          '<label>' +
-            '<input name="quarter" type="radio" value="3">' +
-            '<span class="selector-label">3</span>' +
-          '</label>' +
-          '<label>' +
-            '<input name="quarter" type="radio" value="4">' +
-            '<span class="selector-label">4</span>' +
-          '</label>' +
-        '</div>' +
-      '</div>' +
-    '</div>' +
-    '<div class="row">' +
-      '<div class="input-field col s12 m7">' +
-        '<input type="text" id="name" name="name" class="validate" required>' +
-        '<label for="name">Your name</label>' +
-      '</div>' +
-    '</div>';
+TakeAttendance.prototype.getHeader = function () {
+  return `
+    <h1>${this._pageTitle}</h1>
+    <div class="row">
+      <div class="input-field col s12 m5">
+        <input type="text" id="date" name="date" 
+            class="datepicker validate" required>
+        <label for="date">Meeting date</label>
+      </div>
+      <div class="col s12 m6 offset-m1">
+        <h6>Quarter</h6>
+        <div class="selector">
+          <label>
+            <input name="quarter" type="radio" value="1" required>
+            <span class="selector-label">1</span>
+          </label>
+          <label>
+            <input name="quarter" type="radio" value="2">
+            <span class="selector-label">2</span>
+          </label>
+          <label>
+            <input name="quarter" type="radio" value="3">
+            <span class="selector-label">3</span>
+          </label>
+          <label>
+            <input name="quarter" type="radio" value="4">
+            <span class="selector-label">4</span>
+          </label>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="input-field col s12 m7">
+        <input type="text" id="name" name="name" class="validate" required>
+        <label for="name">Your name</label>
+      </div>
+    </div>`
 }
 
 
@@ -91,32 +91,27 @@ TakeAttendance.prototype.getHeader = function() {
  * 
  * @returns {String} The main content of the page.
  */
-TakeAttendance.prototype.getMain = function() {
+TakeAttendance.prototype.getMain = function () {
   var members = [],
-      roster = this.getRoster_(),
-      content = '';
+    roster = this.getRoster_(),
+    content = ''
   while (roster.hasNext()) {
-    var member = roster.getNext();
+    var member = roster.getNext()
     members.push({
       rosterId: member[0],
       lastName: member[1],
       firstName: member[2]
-    });
+    })
   }
-  content = '' +
-    '<div class="row">' +
-      '<div class="col s12">' +
-        '<div class="stackable attendance">';
-  // Insert individual member cards
-  for (var i = 0; i < members.length; i++) {
-    var member = members[i];
-    content += this.getCard_(member);
-  }
-  content += '' +
-        '</div>' +
-      '</div>' +
-    '</div>';
-  return content;
+  content = `
+    <div class="row">
+      <div class="col s12">
+        <div class="stackable attendance">
+  ${members.map(m => this.getCard_(m)).join('')}
+        </div>
+      </div>
+    </div>`
+  return content
 }
 
 
@@ -125,16 +120,14 @@ TakeAttendance.prototype.getMain = function() {
  * 
  * @returns {String} The page footer.
  */
-TakeAttendance.prototype.getFooter = function() {
-  return '' +
-    '<button id="submit" class="btn btn-large waves-effect waves-light" ' +
-        'data-page="takeAttendance">' +
-      'Save' +
-    '</button>' +
-    '<button id="cancel" class="btn btn-large btn-flat waves-effect waves-light" ' +
-        'data-page="viewAttendance" type="button">' +
-      'Cancel' +
-    '</button>';
+TakeAttendance.prototype.getFooter = function () {
+  return `
+    <button id="submit" class="btn btn-large waves-effect waves-light" data-page="takeAttendance">
+      Save
+    </button>
+    <button id="cancel" class="btn btn-large btn-flat waves-effect waves-light" data-page="viewAttendance" type="button">
+      Cancel
+    </button>`
 }
 
 
@@ -145,10 +138,12 @@ TakeAttendance.prototype.getFooter = function() {
  * @param {Object} attendance The form values containing the user input.
  * @returns {DisplayObject[]} The app page to display.
  */
-TakeAttendance.prototype.saveAttendance = function(attendance) {
+TakeAttendance.prototype.saveAttendance = function (attendance) {
+  console.log(attendance)
   try {
-    var index = this._db.setFieldHeader('attendance', ('Att-' + attendance.date),
-        attendance.name, ('Q' + attendance.quarter));
+    var index = this._db.setFieldHeader('attendance', (`Att-${attendance.date}`),
+      attendance.name, (`Q${attendance.quarter}`))
+    console.log(`index: ${index}`)
     var data = {
       rosterIds: attendance.rosterIds,
       fields: [{
@@ -156,12 +151,12 @@ TakeAttendance.prototype.saveAttendance = function(attendance) {
         data: attendance.marks,
         notes: attendance.reasons
       }]
-    };
-    this._db.setFieldData(data);
+    }
+    this._db.setFieldData(data)
     return getSuccessPage(this._pageTitle, 'Attendance saved',
-      this.getSuccess_());
-  } catch(error) {
-    return getErrorPage(this._pageTitle, 'Error saving attendance', error);
+      this.getSuccess_())
+  } catch (error) {
+    return getErrorPage(this._pageTitle, 'Error saving attendance', error)
   }
 }
 
@@ -173,37 +168,37 @@ TakeAttendance.prototype.saveAttendance = function(attendance) {
  * @param {Object} member The member information.
  * @returns {String} The member card.
  */
-TakeAttendance.prototype.getCard_ = function(member) {
-  var marksName = 'attendance-' + member.rosterId,
-      reasonName = 'reason-' + member.rosterId;
-  return '' +
-    '<div class="card">' +
-      '<div class="card-content">' +
-        '<div class="card-title">' +
-          '<span>' + member.lastName + ', </span>' +
-          '<span>' + member.firstName + '</span>' +
-        '</div>' +
-        '<div class="card-actions selector selector-large">' +
-          '<label class="selector-green">' +
-            '<input name="' + marksName + '" type="radio" value="P" required>' +
-            '<span class="selector-label">P</span>' +
-          '</label>' +
-          '<label class="selector-red">' +
-            '<input name="' + marksName + '" type="radio" value="A">' +
-            '<span class="selector-label">A</span>' +
-          '</label>' +
-          '<label>' +
-            '<input name="' + marksName + '" type="radio" value="E">' +
-            '<span class="selector-label">E</span>' +
-          '</label>' +
-        '</div>' +
-        '<div class="input-field">' +
-          '<input type="text" name="' + reasonName + '" id="' + reasonName + '" rows="2" class="materialize-textarea validate" disabled></textarea>' +
-          '<label for="' + reasonName + '">Reason</label>' +
-        '</div>' +
-      '</div>' +
-      '<input type="hidden" name="rosterId" value="' + member.rosterId + '">' +
-    '</div>';
+TakeAttendance.prototype.getCard_ = function (member) {
+  var marksName = `attendance-${member.rosterId}`,
+    reasonName = `reason-${member.rosterId}`
+  return `
+    <div class="card">
+      <div class="card-content">
+        <div class="card-title">
+          <span>${member.lastName}, </span>
+          <span>${member.firstName}</span>
+        </div>
+        <div class="card-actions selector selector-large">
+          <label class="selector-green">
+            <input name="${marksName}" type="radio" value="P" required>
+            <span class="selector-label">P</span>
+          </label>
+          <label class="selector-red">
+            <input name="${marksName}" type="radio" value="A">
+            <span class="selector-label">A</span>
+          </label>
+          <label>
+            <input name="${marksName}" type="radio" value="E">
+            <span class="selector-label">E</span>
+          </label>
+        </div>
+        <div class="input-field">
+          <input type="text" name="${reasonName}" id="${reasonName}" rows="2" class="materialize-textarea validate" disabled></textarea>
+          <label for="${reasonName}">Reason</label>
+        </div>
+      </div>
+      <input type="hidden" name="rosterId" value="${member.rosterId}">
+    </div>`
 }
 
 
@@ -213,17 +208,17 @@ TakeAttendance.prototype.getCard_ = function(member) {
  * @private
  * @returns {DataSet} The roster data, filtered and sorted by last name.
  */
-TakeAttendance.prototype.getRoster_ = function() {
+TakeAttendance.prototype.getRoster_ = function () {
   var fields = [
     this._db.sections.roster.fields.rosterId,
     this._db.sections.roster.fields.lastName,
     this._db.sections.roster.fields.firstName,
     this._db.sections.memberInformation.fields.membershipStatus
-  ];
-  var roster = this._db.getSelectedFields(fields);
+  ]
+  var roster = this._db.getSelectedFields(fields)
   return roster
     .filterByField(3, 'active')
-    .sortByField(1);
+    .sortByField(1)
 }
 
 
@@ -233,16 +228,16 @@ TakeAttendance.prototype.getRoster_ = function() {
  * @private
  * @returns {String} The success message.
  */
-TakeAttendance.prototype.getSuccess_ = function() {
-  return '' +
-    '<div class="panels">' +
-      '<div class="panel panel-2" data-page="viewAttendance">' +
-        '<i class="fas fa-fw fa-3x fa-eye"></i>' +
-        '<h5>View Attendance</h5>' +
-      '</div>' +
-      '<div class="panel panel-2" data-page="takeAttendance">' +
-        '<i class="fas fa-fw fa-3x fa-plus-circle"></i>' +
-        '<h5>Take Attendance</h5>' +
-      '</div>' +
-    '</div>';
+TakeAttendance.prototype.getSuccess_ = function () {
+  return `
+    <div class="panels">
+      <div class="panel panel-2" data-page="viewAttendance">
+        <i class="fas fa-fw fa-3x fa-eye"></i>
+        <h5>View Attendance</h5>
+      </div>
+      <div class="panel panel-2" data-page="takeAttendance">
+        <i class="fas fa-fw fa-3x fa-plus-circle"></i>
+        <h5>Take Attendance</h5>
+      </div>
+    </div>`
 }

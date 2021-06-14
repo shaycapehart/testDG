@@ -1,4 +1,3 @@
-<script>
 /**
  * Copyright 2018 Joseph W. May. All Rights Reserved.
  *
@@ -16,11 +15,11 @@
  */
 
 
- /**
-  * The FormHandler object provides a set of helper functions that use jQuery
-  * for obtaining values from the inputs of a form.
-  */
-var FormHandler = function() {};
+/**
+ * The FormHandler object provides a set of helper functions that use jQuery
+ * for obtaining values from the inputs of a form.
+ */
+var FormHandler = function () { }
 
 
 /**
@@ -29,8 +28,8 @@ var FormHandler = function() {};
  * @param {string} selector The input selector.
  * @returns {string} A string representing the value of the given input.
  */
-FormHandler.prototype.getValue = function(selector) {
-  return $(selector).val();
+FormHandler.prototype.getValue = function (selector) {
+  return $(selector).val()
 }
 
 
@@ -41,12 +40,12 @@ FormHandler.prototype.getValue = function(selector) {
  * @returns {array} An array of strings representing the value for each field
  *     with the given selector.
  */
-FormHandler.prototype.getValues = function(selector) {
-  var inputValues = [];
-  $(selector).each(function() {
-    inputValues.push($(this).val());
-  });
-  return inputValues;
+FormHandler.prototype.getValues = function (selector) {
+  var inputValues = []
+  $(selector).each(function () {
+    inputValues.push($(this).val())
+  })
+  return inputValues
 }
 
 
@@ -56,13 +55,13 @@ FormHandler.prototype.getValues = function(selector) {
  * @param {string} name The name attribute of the checkboxes.
  * @returns {array} An array of values of checked inputs.
  */
-FormHandler.prototype.getCheckedBoxes = function(name) {
-  var selector = 'input[name="' + name + '"]:checked';
-  var checked = [];
-  $(selector).each(function() {
-    checked.push($(this).val());
-  });
-  return checked;
+FormHandler.prototype.getCheckedBoxes = function (name) {
+  var selector = 'input[name="' + name + '"]:checked'
+  var checked = []
+  $(selector).each(function () {
+    checked.push($(this).val())
+  })
+  return checked
 }
 
 
@@ -73,12 +72,11 @@ FormHandler.prototype.getCheckedBoxes = function(name) {
  * @param {string} name The name attribute of the checkboxes.
  * @returns {array} An array of booleans.
  */
-FormHandler.prototype.getCheckboxStatus = function(name) {
-  var selector = 'input[name="' + name + '"]';
-  var status = [];
-  $(selector).each(function() {
-    status.push($(this).prop('checked'));
-  });
-  return status;
+FormHandler.prototype.getCheckboxStatus = function (name) {
+  var selector = 'input[name="' + name + '"]'
+  var status = []
+  $(selector).each(function () {
+    status.push($(this).prop('checked'))
+  })
+  return status
 }
-</script>

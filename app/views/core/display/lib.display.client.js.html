@@ -1,4 +1,3 @@
-<script>
 /**
  * Helper function for updating the user-interface with a single display
  * or an array of displays.
@@ -13,37 +12,37 @@
  *    DisplayObject instances that defines the display parameters.
  */
 function updateDisplay(displayObject) {
-  var display = new Display();
+  var display = new Display()
 
   if (Array.isArray(displayObject) === true) {
-    displayObject.forEach(function(object) {
-      display.updateDisplay(object);
-    });
+    displayObject.forEach(function (object) {
+      display.updateDisplay(object)
+    })
   } else {
-    display.updateDisplay(displayObject);
+    display.updateDisplay(displayObject)
   }
-  
+
   // Hide the loading overlay in case it was displayed during a server call
-  display.hideLoading();
+  display.hideLoading()
 
   // Render any Materialized select elements after updating the display
   // *** HACK *** In an ideal world this wouldn't be here, but the Materialize
   // select elements will not load when this function is called in the
   // app.client.js.html file, but does work when placed here (likely due to
   // order in which functions are called)...so here it is :/
-  $(document).ready(function() {
-    $('select').formSelect();
-  });
+  $(document).ready(function () {
+    $('select').formSelect()
+  })
 
   // Reposition labels on pre-filled inputs
-  $(document).ready(function() {
-    M.updateTextFields();
-  });
+  $(document).ready(function () {
+    M.updateTextFields()
+  })
 
   // Display Google Charts
-  $(document).ready(function() {
-    google.charts.setOnLoadCallback(drawCharts);
-  });
+  $(document).ready(function () {
+    google.charts.setOnLoadCallback(drawCharts)
+  })
 }
 
 
@@ -51,8 +50,8 @@ function updateDisplay(displayObject) {
 * Helper function for displaying the loading message on the user interface.
 */
 function showLoading() {
-  var display = new Display();
-  display.showLoading();
+  var display = new Display()
+  display.showLoading()
 }
 
 
@@ -60,8 +59,8 @@ function showLoading() {
 * Helper function for hiding the loading message from the user interface.
 */
 function hideLoading() {
-  var display = new Display();
-  display.hideLoading();
+  var display = new Display()
+  display.hideLoading()
 }
 
 
@@ -74,8 +73,8 @@ function hideLoading() {
  * @param {string} section The section of the display to clear. Default is all.
  */
 function clearDisplay(section) {
-  var display = new Display();
-  display.clearDisplay(section);
+  var display = new Display()
+  display.clearDisplay(section)
 }
 
 
@@ -85,7 +84,7 @@ function clearDisplay(section) {
  * @param {element} elem The clicked element.
  */
 function closeAlert(elem) {
-  $(elem).parent().remove();
+  $(elem).parent().remove()
 }
 
 
@@ -94,9 +93,9 @@ function closeAlert(elem) {
  * 
  * @param {string} id The id of the element to scroll to.
  */
-function scrollTo(id){
-  var element = $(id);
-  $('html,body').animate({scrollTop: element.offset().top},'slow');
+function scrollTo(id) {
+  var element = $(id)
+  $('html,body').animate({ scrollTop: element.offset().top }, 'slow')
 }
 
 
@@ -105,15 +104,15 @@ function scrollTo(id){
 /**
 * Base class for controlling the user interface.
 */
-var Display = function() {
-  this.html = $('html');
-  this.body = $('body');
-  this.header = $('#app-header');
-  this.message = $('#message');
-  this.main = $('#app-main');
-  this.footer = $('#app-footer');
-  this.loading = $('.app-loading-overlay');
-};
+var Display = function () {
+  this.html = $('html')
+  this.body = $('body')
+  this.header = $('#app-header')
+  this.message = $('#message')
+  this.main = $('#app-main')
+  this.footer = $('#app-footer')
+  this.loading = $('.app-loading-overlay')
+}
 
 
 /**
@@ -122,39 +121,39 @@ var Display = function() {
 * @param {DisplayObject} display A DisplayObject instance containing
 *    the parameters that define the display.
 */
-Display.prototype.updateDisplay = function(display) {
+Display.prototype.updateDisplay = function (display) {
   // Clear the display if reset is True
-  if (display.reset !== null) this.clearDisplay(display.reset);
+  if (display.reset !== null) this.clearDisplay(display.reset)
 
   // Update the display with the specified display type
   if (display.type.startsWith('alert') === true) {
-    var alert = this.getAlert(display.type, display.content);
-    $(alert).hide().appendTo(this.alert).slideDown('slow');
-  
+    var alert = this.getAlert(display.type, display.content)
+    $(alert).hide().appendTo(this.alert).slideDown('slow')
+
   } else if (display.type === 'card') {
-    var card = this.getCard(display.content, display.id);
+    var card = this.getCard(display.content, display.id)
     if (display.position === 'top') {
-      $(card).hide().prependTo(this.content).slideDown('slow');
+      $(card).hide().prependTo(this.content).slideDown('slow')
     } else if (display.position === 'bottom') {
-      $(card).hide().appendTo(this.content).slideDown('slow');
+      $(card).hide().appendTo(this.content).slideDown('slow')
     }
-  
+
   } else if (display.type === 'header') {
-    this.header.html(display.content);
+    this.header.html(display.content)
 
   } else if (display.type === 'main') {
-    this.main.html(display.content);
+    this.main.html(display.content)
 
   } else if (display.type === 'footer') {
-    this.footer.html(display.content);
-  
-  // Show an error if an invalid display type was specified
+    this.footer.html(display.content)
+
+    // Show an error if an invalid display type was specified
   } else {
     var error = getDisplayObject('alert-error',
-        'An invalid display type was specified.');
-    this.updateDisplay(error);
+      'An invalid display type was specified.')
+    this.updateDisplay(error)
   }
-};
+}
 
 
 /**
@@ -165,46 +164,46 @@ Display.prototype.updateDisplay = function(display) {
 *
 * @param {string} section The section of the display to clear. Default is all.
 */
-Display.prototype.clearDisplay = function(section='all') {
-  switch(section) {
+Display.prototype.clearDisplay = function (section = 'all') {
+  switch (section) {
     case 'header':
-      this.header.html('');
-      break;
+      this.header.html('')
+      break
     case 'message':
-      this.message.html('');
-      break;
+      this.message.html('')
+      break
     case 'main':
-      this.main.html('');
-      break;
+      this.main.html('')
+      break
     case 'footer':
-      this.footer.html('');
-      break;
+      this.footer.html('')
+      break
     default:
-      this.header.html('');
-      this.message.html('');
-      this.main.html('');
-      this.footer.html('');
+      this.header.html('')
+      this.message.html('')
+      this.main.html('')
+      this.footer.html('')
   }
-};
+}
 
 
 /**
 * Shows the loading overlay on the display.
 */
-Display.prototype.showLoading = function() {
-  this.html.scrollTop(0);
-  this.body.toggleClass('app-loading');
-  this.loading.toggle();
-};
+Display.prototype.showLoading = function () {
+  this.html.scrollTop(0)
+  this.body.toggleClass('app-loading')
+  this.loading.toggle()
+}
 
 
 /**
 * Hides the loading overlay on the display.
 */
-Display.prototype.hideLoading = function() {
-  this.body.toggleClass('app-loading');
-  this.loading.toggle();
-};
+Display.prototype.hideLoading = function () {
+  this.body.toggleClass('app-loading')
+  this.loading.toggle()
+}
 
 
 /**
@@ -216,17 +215,16 @@ Display.prototype.hideLoading = function() {
 * @param {string} content The content displayed in the alert.
 * @returns {string} An HTML-formatted string containing the alert.
 */
-Display.prototype.getAlert = function(type, content) {
-  var alert = '' +
-      '<div class="alert ' + type + ' border-0">' +
-        '<button type="button" class="close" aria-label="Close" ' +
-            'onclick="closeAlert(this);">' +
-          '&times;' +
-        '</button>' +
-        content +
-      '</div>';
-  return alert;
-};
+Display.prototype.getAlert = function (type, content) {
+  var alert = `
+    <div class="alert ${type} border-0">
+      <button type="button" class="close" aria-label="Close" onclick="closeAlert(this);">
+        &times;
+      </button>
+        ${content}
+    </div>`
+  return alert
+}
 
 
 /**
@@ -238,14 +236,14 @@ Display.prototype.getAlert = function(type, content) {
 * @param {string=} id The id of the card element. Default is none.
 * @returns {string} An HTML-formatted string containing the card.
 */
-Display.prototype.getCard = function(content, id) {
-  id = (id !== '' ? ' id="' + id + '"' : '');
-  var card = '' +
-      '<div class="card"' + id + '>' +
-        content +
-      '</div>';
-  return card;
-};
+Display.prototype.getCard = function (content, id) {
+  id = (id !== '' ? ` id="${id}"` : '')
+  var card = `
+    <div class="card"${id}>
+      ${content}
+    </div>`
+  return card
+}
 
 
 /**
@@ -267,12 +265,11 @@ Display.prototype.getCard = function(content, id) {
  *    updating. Default is null.
  * @return {object} An instance of DisplayObject.
  */
-var getDisplayObject = function(type, content, reset=null) {
+var getDisplayObject = function (type, content, reset = null) {
   var displayObject = {
     type: type,
     content: content,
     reset: reset
-  };
-  return displayObject;
-};
-</script>
+  }
+  return displayObject
+}

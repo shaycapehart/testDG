@@ -136,8 +136,10 @@ Database.prototype.getNextFieldIndex = function (section) {
   var sectionData = this.sections[section],
     numFields = Object.keys(sectionData.fields).length,
     nextIndex = (sectionData.start + numFields)
+
+  console.log(sectionData)
   // Return 0 if there is no new field for the current section
-  nextIndex = (nextIndex <= sectionData.range) ? nextIndex : 0
+  // nextIndex = (nextIndex <= sectionData.range) ? nextIndex : 0
   return nextIndex
 }
 
@@ -294,6 +296,7 @@ Database.prototype.setFieldData = function (entries) {
  */
 Database.prototype.setFieldHeader = function (section, title, titleMeta, subtitle) {
   var index = this.getNextFieldIndex(section)
+  console.log(`Database.setFieldHeader > index: ${index}`)
   this.spreadsheet.setCell(Configuration.layout.fields, index, title, titleMeta)
   if (subtitle) {
     this.spreadsheet.setCell(Configuration.layout.fieldMeta, index, subtitle)

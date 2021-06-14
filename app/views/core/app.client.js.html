@@ -1,346 +1,348 @@
-<script>
-  $(document).ready(function () {
-    initialize()
+$(document).ready(function () {
+  initialize()
 
-    // Initialize dropdowns and sidebar, which toggles on mobile displays
-    $('.sidenav').sidenav()
-    $('.dropdown-trigger').dropdown()
+  // Initialize dropdowns and sidebar, which toggles on mobile displays
+  $('.sidenav').sidenav()
+  $('.dropdown-trigger').dropdown()
 
-    // Initialize datepickers on dynamically-generated input elements
-    $('body').on('focus', '.datepicker', function () {
-      $(this).datepicker({
-        yearRange: [1928, (new Date()).getFullYear()]
-      })
-    })
-
-    // Handle navigation button clicks, some of which are dynamically generated
-    $(document).on('click', 'a.nav-link, a.btn-floating, div.panel', function () {
-      var page = $(this).data('page')
-      getPage(page)
-    })
-
-    // Handle the edit member button click
-    $(document).on('click', '#editMember', function () {
-      getPage('editMember', {
-        rosterId: $(this).data('rosterid')
-      })
-    })
-
-    // Handle the edit account link click
-    $(document).on('click', '#editAccount', function () {
-      getPage('editAccount', {
-        rosterId: $(this).data('rosterid')
-      })
-    })
-
-    // Handle incrementer button clicks
-    $(document).on('click', '.increment', function () {
-      var $this = $(this),
-        amount = parseInt($this.data('amount')),
-        input = $this.parent('.incrementer').siblings('input'),
-        inputValue = parseInt(input.val())
-      input.val(inputValue + amount)
-    })
-
-    // Handle the dynamically-generated submit button click
-    $('form.application').submit(function () {
-      if ($(this).valid()) {
-        submit()
+  // Initialize datepickers on dynamically-generated input elements
+  $('body').on('focus', '.datepicker', function () {
+    $(this).datepicker({
+      yearRange: [1928, (new Date()).getFullYear()],
+      onSelect: function (selectedDate) {
+        var quarter = Math.trunc(selectedDate.getMonth() / 3) + 1
+        $(`input[name="quarter"][value="${quarter}"]`).prop("checked", true)
       }
-    })
-
-    // Handle the dynamically-generated cancel button click
-    $(document).on('click', '#cancel', function () {
-      getPage($(this).data('page'))
-    })
-
-    // Handle the dynamically-generated apply filters button click
-    $(document).on('click', '#applyFilter', function () {
-      var filters = {},
-        page = $(this).data('page')
-      $('.filter-select').each(function () {
-        filters[$(this).attr('id')] = $(this).val()
-      })
-      getPage(page, {
-        filters: filters
-      })
-    })
-
-    // Handle the attendance action button selections, which involves enabling a
-    // text input when the 'excused' absence type is selected, and disabling the
-    // input when the 'present' or 'absent' type is selected
-    $(document).on('click', 'input[name^="attendance-"]', function () {
-      var $selector = $(this).parents('.selector'),
-        $checked = $selector.find(':checked'),
-        $reason = $selector.parent().find('input[name^="reason-"]')
-      // Textarea is only used for 'excused' absence type
-      if ($checked.val() === 'E') {
-        $reason.prop({
-          'disabled': false,
-          'required': true
-        })
-      } else {
-        $reason.prop({
-          'disabled': true,
-          'required': false
-        }).removeClass('valid invalid')
-      }
-    })
-
-    // Handle the hover effect on the dynamically-generated Settings page by
-    // revealing help text when the user hovers over a single setting.
-    $(document).on('mouseenter mouseleave', '.setting', function () {
-      $(this).toggleClass('hovered')
-    })
-
-    // Handle the click effect on the dynamically-generated Settings page by
-    // giving focus to the input element when the user clicks any part of a
-    // settin.
-    $(document).on('click', '.setting', function () {
-      $(this).find('input').focus()
     })
   })
 
+  // Handle navigation button clicks, some of which are dynamically generated
+  $(document).on('click', 'a.nav-link, a.btn-floating, div.panel', function () {
+    var page = $(this).data('page')
+    getPage(page)
+  })
 
-  /**
-   * Load the app by getting the dashboard page.
-   */
-  function initialize() {
-    getPage('dashboard')
-  }
+  // Handle the edit member button click
+  $(document).on('click', '#editMember', function () {
+    getPage('editMember', {
+      rosterId: $(this).data('rosterid')
+    })
+  })
 
+  // Handle the edit account link click
+  $(document).on('click', '#editAccount', function () {
+    getPage('editAccount', {
+      rosterId: $(this).data('rosterid')
+    })
+  })
 
-  /**
-   * Shows the given page on the app display by running a server-side controller.
-   *
-   * @param {String} page The name of the page to display.
-   * @param {Object} args An optional object for passing controller options.
-   */
-  function getPage(page, args) {
-    showLoading()
-    google.script.run
-      .withSuccessHandler(updateDisplay)
-      .getAppPage(page, args)
-  }
+  // Handle incrementer button clicks
+  $(document).on('click', '.increment', function () {
+    var $this = $(this),
+      amount = parseInt($this.data('amount')),
+      input = $this.parent('.incrementer').siblings('input'),
+      inputValue = parseInt(input.val())
+    input.val(inputValue + amount)
+  })
 
-
-  /**
-   * Handles the submit button click by processing the given form data using the
-   * page controller.
-   */
-  function submit() {
-    var page = $('#submit').data('page')
-    showLoading()
-    switch (page) {
-      case 'addMember':
-        submitMember_()
-        break
-      case 'editAccount':
-        submitAccount_()
-        break
-      case 'manageShirts':
-        submitShirts_()
-        break
-      case 'runFundraiser':
-        submitFundraiser_()
-        break
-      case 'saveSettings':
-        submitSettings_()
-        break
-      case 'takeAttendance':
-        submitAttendance_()
-        break
+  // Handle the dynamically-generated submit button click
+  $('form.application').submit(function () {
+    if ($(this).valid()) {
+      submit()
     }
-  }
+  })
 
+  // Handle the dynamically-generated cancel button click
+  $(document).on('click', '#cancel', function () {
+    getPage($(this).data('page'))
+  })
 
-  /**
-   * Calls the server-side function to gather the chart data and displays the
-   * charts when the data is returned.
-   */
-  function drawCharts() {
-    google.script.run
-      .withSuccessHandler(showCharts_)
-      .getCharts()
-  }
+  // Handle the dynamically-generated apply filters button click
+  $(document).on('click', '#applyFilter', function () {
+    var filters = {},
+      page = $(this).data('page')
+    $('.filter-select').each(function () {
+      filters[$(this).attr('id')] = $(this).val()
+    })
+    getPage(page, {
+      filters: filters
+    })
+  })
 
-
-  /**
-   * Gathers the form data and runs server-side functions to write account data
-   * in the database spreadsheet for the 'Edit Account' page.
-   *
-   * @private
-   */
-  function submitAccount_() {
-    var form = new FormHandler()
-    var account = {
-      rosterId: form.getValue('#rosterId'),
-      fundraiserAmountCheckedOut: form.getValue('#fundraiserAmountCheckedOut'),
-      fundraiserAmountCheckedIn: form.getValue('#fundraiserAmountCheckedIn'),
-      finesCharged: form.getValue('#finesCharged'),
-      finesPaid: form.getValue('#finesPaid'),
-      membershipFeePaid: form.getValue('#membershipFeePaid')
+  // Handle the attendance action button selections, which involves enabling a
+  // text input when the 'excused' absence type is selected, and disabling the
+  // input when the 'present' or 'absent' type is selected
+  $(document).on('click', 'input[name^="attendance-"]', function () {
+    var $selector = $(this).parents('.selector'),
+      $checked = $selector.find(':checked'),
+      $reason = $selector.parent().find('input[name^="reason-"]')
+    // Textarea is only used for 'excused' absence type
+    if ($checked.val() === 'E') {
+      $reason.prop({
+        'disabled': false,
+        'required': true
+      })
+    } else {
+      $reason.prop({
+        'disabled': true,
+        'required': false
+      }).removeClass('valid invalid')
     }
-    google.script.run
-      .withSuccessHandler(updateDisplay)
-      .saveAccount(account)
+  })
+
+  // Handle the hover effect on the dynamically-generated Settings page by
+  // revealing help text when the user hovers over a single setting.
+  $(document).on('mouseenter mouseleave', '.setting', function () {
+    $(this).toggleClass('hovered')
+  })
+
+  // Handle the click effect on the dynamically-generated Settings page by
+  // giving focus to the input element when the user clicks any part of a
+  // settin.
+  $(document).on('click', '.setting', function () {
+    $(this).find('input').focus()
+  })
+})
+
+
+/**
+ * Load the app by getting the dashboard page.
+ */
+function initialize() {
+  getPage('dashboard')
+}
+
+
+/**
+ * Shows the given page on the app display by running a server-side controller.
+ *
+ * @param {String} page The name of the page to display.
+ * @param {Object} args An optional object for passing controller options.
+ */
+function getPage(page, args) {
+  showLoading()
+  google.script.run
+    .withSuccessHandler(updateDisplay)
+    .getAppPage(page, args)
+}
+
+
+/**
+ * Handles the submit button click by processing the given form data using the
+ * page controller.
+ */
+function submit() {
+  var page = $('#submit').data('page')
+  showLoading()
+  switch (page) {
+    case 'addMember':
+      submitMember_()
+      break
+    case 'editAccount':
+      submitAccount_()
+      break
+    case 'manageShirts':
+      submitShirts_()
+      break
+    case 'runFundraiser':
+      submitFundraiser_()
+      break
+    case 'saveSettings':
+      submitSettings_()
+      break
+    case 'takeAttendance':
+      submitAttendance_()
+      break
   }
+}
 
 
-  /**
-   * Gathers the form data and runs server-side functions to write attendance
-   * data in the database spreadsheet for the 'Take Attendance' page.
-   *
-   * @private
-   */
-  function submitAttendance_() {
-    var form = new FormHandler()
-    var attendance = {
-      date: form.getValue('#date'),
-      name: form.getValue('#name'),
-      quarter: form.getValue('input[name="quarter"]:checked'),
-      rosterIds: form.getValues('input[name="rosterId"]'),
-      marks: form.getValues('input[name^="attendance-"]:checked'),
-      reasons: form.getValues('input[name^="reason-"]')
-    }
-    google.script.run
-      .withSuccessHandler(updateDisplay)
-      .saveAttendance(attendance)
+/**
+ * Calls the server-side function to gather the chart data and displays the
+ * charts when the data is returned.
+ */
+function drawCharts() {
+  google.script.run
+    .withSuccessHandler(showCharts_)
+    .getCharts()
+}
+
+
+/**
+ * Gathers the form data and runs server-side functions to write account data
+ * in the database spreadsheet for the 'Edit Account' page.
+ *
+ * @private
+ */
+function submitAccount_() {
+  var form = new FormHandler()
+  var account = {
+    rosterId: form.getValue('#rosterId'),
+    fundraiserAmountCheckedOut: form.getValue('#fundraiserAmountCheckedOut'),
+    fundraiserAmountCheckedIn: form.getValue('#fundraiserAmountCheckedIn'),
+    finesCharged: form.getValue('#finesCharged'),
+    finesPaid: form.getValue('#finesPaid'),
+    membershipFeePaid: form.getValue('#membershipFeePaid')
   }
+  google.script.run
+    .withSuccessHandler(updateDisplay)
+    .saveAccount(account)
+}
 
 
-  /**
-   * Gathers the form data and runs server-side functions to write fundraiser
-   * data in the database spreadsheet for the 'Run Fundraiser' page.
-   *
-   * @private
-   */
-  function submitFundraiser_() {
-    var form = new FormHandler()
-    var accounts = {
-      rosterIds: form.getValues('input[name="rosterId"]'),
-      fundraiserAmountsCheckedOut: form.getValues('input[name^="checkedOut-"]'),
-      fundraiserAmountsCheckedIn: form.getValues('input[name^="checkedIn-"]')
-    }
-    google.script.run
-      .withSuccessHandler(updateDisplay)
-      .saveFundraiser(accounts)
+/**
+ * Gathers the form data and runs server-side functions to write attendance
+ * data in the database spreadsheet for the 'Take Attendance' page.
+ *
+ * @private
+ */
+function submitAttendance_() {
+  var form = new FormHandler()
+  var attendance = {
+    date: form.getValue('#date'),
+    name: form.getValue('#name'),
+    quarter: form.getValue('input[name="quarter"]:checked'),
+    rosterIds: form.getValues('input[name="rosterId"]'),
+    marks: form.getValues('input[name^="attendance-"]:checked'),
+    reasons: form.getValues('input[name^="reason-"]')
   }
+  google.script.run
+    .withSuccessHandler(updateDisplay)
+    .saveAttendance(attendance)
+}
 
 
-  /**
-   * Gathers the form data and runs server-side functions to write member data in
-   * the database spreadsheet for the 'Add/Edit Member' page.
-   *
-   * @private
-   */
-  function submitMember_() {
-    var form = new FormHandler()
-    var member = {
-      rosterId: form.getValue('#rosterId'),
-      firstName: form.getValue('#firstName'),
-      lastName: form.getValue('#lastName'),
-      studentNumber: form.getValue('#studentNumber'),
-      birthdate: form.getValue('#birthdate'),
-      grade: form.getValue('input[name="grade"]:checked'),
-      gender: form.getValue('input[name="gender"]:checked'),
-      yearJoined: form.getValue('#year'),
-      membershipStatus: form.getValue('#status'),
-    }
-    google.script.run
-      .withSuccessHandler(updateDisplay)
-      .saveMember(member)
+/**
+ * Gathers the form data and runs server-side functions to write fundraiser
+ * data in the database spreadsheet for the 'Run Fundraiser' page.
+ *
+ * @private
+ */
+function submitFundraiser_() {
+  var form = new FormHandler()
+  var accounts = {
+    rosterIds: form.getValues('input[name="rosterId"]'),
+    fundraiserAmountsCheckedOut: form.getValues('input[name^="checkedOut-"]'),
+    fundraiserAmountsCheckedIn: form.getValues('input[name^="checkedIn-"]')
   }
+  google.script.run
+    .withSuccessHandler(updateDisplay)
+    .saveFundraiser(accounts)
+}
 
 
-  /**
-   * Gathers the form data and runs server-side functions to store settings values
-   * in the document property store for the 'Settings' page.
-   *
-   * @private
-   */
-  function submitSettings_() {
-    var form = new FormHandler()
-    var settings = {
-      membershipFee: form.getValue('#membershipFee'),
-      incrementer1: form.getValue('#incrementer1'),
-      incrementer2: form.getValue('#incrementer2'),
-    }
-    google.script.run
-      .withSuccessHandler(updateDisplay)
-      .saveSettings(settings)
+/**
+ * Gathers the form data and runs server-side functions to write member data in
+ * the database spreadsheet for the 'Add/Edit Member' page.
+ *
+ * @private
+ */
+function submitMember_() {
+  var form = new FormHandler()
+  var member = {
+    rosterId: form.getValue('#rosterId'),
+    firstName: form.getValue('#firstName'),
+    lastName: form.getValue('#lastName'),
+    studentNumber: form.getValue('#studentNumber'),
+    birthdate: form.getValue('#birthdate'),
+    grade: form.getValue('input[name="grade"]:checked'),
+    gender: form.getValue('input[name="gender"]:checked'),
+    yearJoined: form.getValue('#year'),
+    membershipStatus: form.getValue('#status'),
   }
+  google.script.run
+    .withSuccessHandler(updateDisplay)
+    .saveMember(member)
+}
 
 
-  /**
-   * Gathers the form data and runs server-side functions to write member data in
-   * the database spreadsheet for the 'Manage Shirts' page.
-   *
-   * @private
-   */
-  function submitShirts_() {
-    var form = new FormHandler()
-    var shirts = {
-      rosterIds: form.getValues('input[name="rosterId"]'),
-      shirtSizes: form.getValues('input[name^="shirtSize-"]:checked'),
-      shirtsReceived: form.getValues('input[name^="shirtReceived-"]:checked'),
-    }
-    google.script.run
-      .withSuccessHandler(updateDisplay)
-      .saveShirts(shirts)
+/**
+ * Gathers the form data and runs server-side functions to store settings values
+ * in the document property store for the 'Settings' page.
+ *
+ * @private
+ */
+function submitSettings_() {
+  var form = new FormHandler()
+  var settings = {
+    membershipFee: form.getValue('#membershipFee'),
+    incrementer1: form.getValue('#incrementer1'),
+    incrementer2: form.getValue('#incrementer2'),
   }
+  google.script.run
+    .withSuccessHandler(updateDisplay)
+    .saveSettings(settings)
+}
 
 
-  /**
-   * Constructs the chart displays for the dashboard.
-   *
-   * @param charts The chart data to display.
-   */
-  function showCharts_(charts) {
-    try {
-      for (var chartName in charts) {
-        var chart = charts[chartName],
-          data = google.visualization.arrayToDataTable(chart.data),
-          options = {
-            'title': chart.title
-          }
+/**
+ * Gathers the form data and runs server-side functions to write member data in
+ * the database spreadsheet for the 'Manage Shirts' page.
+ *
+ * @private
+ */
+function submitShirts_() {
+  var form = new FormHandler()
+  var shirts = {
+    rosterIds: form.getValues('input[name="rosterId"]'),
+    shirtSizes: form.getValues('input[name^="shirtSize-"]:checked'),
+    shirtsReceived: form.getValues('input[name^="shirtReceived-"]:checked'),
+  }
+  google.script.run
+    .withSuccessHandler(updateDisplay)
+    .saveShirts(shirts)
+}
 
-        if (chart.hasOwnProperty('legend')) {
-          options['legend'] = chart.legend
+
+/**
+ * Constructs the chart displays for the dashboard.
+ *
+ * @param charts The chart data to display.
+ */
+function showCharts_(charts) {
+  try {
+    for (var chartName in charts) {
+      var chart = charts[chartName],
+        data = google.visualization.arrayToDataTable(chart.data),
+        options = {
+          'title': chart.title
         }
 
-        var chartObject = getChartByType_(chart.type, chart.target)
-        chartObject.draw(data, options)
+      if (chart.hasOwnProperty('legend')) {
+        options['legend'] = chart.legend
       }
-    } catch (error) {
-      // *** HACK *** chart scripts currently run on all page views, and throw an
-      // error to the console when viewing any page other than the dashboard; this
-      // 'empty' catch just prevents the console logs, but really, the chart
-      // scripts should only be run on the dashboard page
-      return null
+
+      var chartObject = getChartByType_(chart.type, chart.target)
+      chartObject.draw(data, options)
     }
+  } catch (error) {
+    // *** HACK *** chart scripts currently run on all page views, and throw an
+    // error to the console when viewing any page other than the dashboard; this
+    // 'empty' catch just prevents the console logs, but really, the chart
+    // scripts should only be run on the dashboard page
+    return null
   }
+}
 
 
-  /**
-   * Returns the Google Chart object for the given chart type that will be
-   * displayed in the given target.
-   *
-   * @param {String} type The type of chart to return.
-   * @param {String} target A selector for the target element where the chart
-   * will be displayed.
-   */
-  function getChartByType_(type, target) {
-    var element = document.getElementById(target)
-    switch (type) {
-      case 'pieChart':
-        return new google.visualization.PieChart(element)
-      case 'barChart':
-        return new google.charts.Bar(element)
-    }
+/**
+ * Returns the Google Chart object for the given chart type that will be
+ * displayed in the given target.
+ *
+ * @param {String} type The type of chart to return.
+ * @param {String} target A selector for the target element where the chart
+ * will be displayed.
+ */
+function getChartByType_(type, target) {
+  var element = document.getElementById(target)
+  switch (type) {
+    case 'pieChart':
+      return new google.visualization.PieChart(element)
+    case 'barChart':
+      return new google.charts.Bar(element)
   }
+}
 
-  google.charts.load('current', {
-    packages: ['corechart', 'bar']
-  })
-</script>
+google.charts.load('current', {
+  packages: ['corechart', 'bar']
+})
